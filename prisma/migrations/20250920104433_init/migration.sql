@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `books` ADD COLUMN `totalPrice` INTEGER NOT NULL DEFAULT 0;

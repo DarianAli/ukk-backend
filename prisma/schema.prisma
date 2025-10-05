@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum role {
+  owner
+  society
+}
+
+enum status {
+  active
+  cancel
+  finish
+}
+
+enum cycle {
+  monthly
+  quarterly
+  yearly
+}
+
+model kos {
+  idKos           Int         @id @default(autoincrement())
+  uuid            String      @unique @default("")
+  name            String      @default("")
+  address         String      @default("")
+  price_per_month String      @default("")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  books           books[]
+  foto            foto[]
+  fasilitas       fasilitas[]
+  reviews         reviews[]
+}
+
+model foto {
+  idFoto          Int         @id @default(autoincrement())
+  uuid            String      @unique @default("")
+  foto            String      @default("")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  kos             kos?        @relation(fields: [kosId], references: [idKos])
+  kosId           Int?
+}
+
+model fasilitas {
+  idFasilitas     Int         @id @default(autoincrement())
+  uuid            String      @unique @default("")
+  fasilitas       String      @default("")
+  kos             kos?        @relation(fields: [kosId], references: [idKos])
+  kosId           Int?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model user {
+  idUser          Int         @id @default(autoincrement())
+  uuid            String      @unique @default("")
+  name            String      @default("")
+  email           String      @default("")
+  password        String      @default("")
+  phone           String      @default("") 
+  role            role        @default(society)  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt  
+  books           books[]    
+  reviews         reviews[]
+}
+
+model books {
+  idBooks         Int         @id @default(autoincrement())
+  uuid            String      @unique @default("")
+  kos_id          kos?        @relation(fields: [kosId], references: [idKos])
+  kosId           Int?
+  user_id         user?       @relation(fields: [userId], references: [idUser])
+  userId          Int?
+  startDate       DateTime
+  endDate         DateTime
+  paymmentCycle   cycle       @default(monthly)
+  status          status      @default(active)
+  totalPrice      Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model reviews {
+  idReviews       Int         @id @default(autoincrement())
+  uuid            String      @unique @default("")
+  comment         String      @default("")
+  user            user?       @relation(fields: [userId], references: [idUser])
+  userId          Int?
+  kos             kos?        @relation(fields: [kosId], references: [idKos])
+  kosId           Int?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
