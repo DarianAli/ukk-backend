@@ -133,3 +133,26 @@ export const deleteData = async (request: Request, response: Response) => {
         return
     }
 }
+
+export const getRekomendation = async (request: Request, response: Response) => {
+    try {
+    const kosList = await prisma.kos.findMany({
+      include: { foto: true },
+    });
+
+    // ambil 5 data random
+    const shuffled = kosList.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 5);
+
+    response.status(200).json({
+      status: true,
+      data: selected,
+      message: "Berhasil menampilkan rekomendasi kos",
+    });
+  } catch (error) {
+    response.status(400).json({
+      status: false,
+      message: `Terjadi kesalahan saat mengambil rekomendasi kos: ${error}`,
+    });
+  }
+}

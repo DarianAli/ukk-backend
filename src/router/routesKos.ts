@@ -1,6 +1,6 @@
 import express from "express";
 import { addData, editData } from "../middleware/verifyKos";
-import { createKos, deleteData, getAllKos, updateData } from "../controller/controllerKos";
+import { createKos, deleteData, getAllKos, getRekomendation, updateData } from "../controller/controllerKos";
 import { verifyRole, verifyToken } from "../middleware/auth";
 
 const app = express()
@@ -10,5 +10,6 @@ app.post("/add", [verifyToken, verifyRole(["owner", "society"]), addData], creat
 app.get("/get", [verifyToken, verifyRole(["owner", "society"])], getAllKos)
 app.put("/update/:idKos", [verifyToken, verifyRole(["owner", "society"]), editData], updateData)
 app.delete("/delete/:idKos", [verifyToken, verifyRole(["owner", "society"]), editData], deleteData)
+app.get("/recommendations", getRekomendation)
 
 export default app

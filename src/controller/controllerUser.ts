@@ -6,6 +6,7 @@ import { stat } from "fs";
 import Jwt from "jsonwebtoken";
 
 import { SECRET } from "../../global";
+import { error } from "console";
  
 const prisma = new PrismaClient({errorFormat: "pretty"})
 
@@ -150,10 +151,10 @@ export const auth = async ( request: Request, response: Response ) => {
         })
 
         if (!user) { 
-            response.status(400).json({
+            response.status(404).json({
                 status: false,
                 logged: false,
-                message: `terjadi sebuah kesalhan saat akan login`
+                message: `user tidak ditemukan, coba periksa kembali email dan password anda`
             })
             return
         }
@@ -162,7 +163,8 @@ export const auth = async ( request: Request, response: Response ) => {
             idUser: user.idUser,
             email: user.email,
             password: user.password,
-            role: user.role
+            role: user.role,
+            name: user.name
         }
 
         let TOKEN = Jwt.sign(
@@ -182,7 +184,29 @@ export const auth = async ( request: Request, response: Response ) => {
     } catch (error) {
         response.json({
             status: false,
-            message: `terjadi sebuah kesalahan saat login`
+            message: `terjadi sebuah kesalahan saat login ${error}`
         }).status(400)
+    }
+}
+
+export const getProfile = async (request: Request, response: Response) => {
+    try {
+        const user = request.body.user;
+        const getOneProfile = await prisma.user.findFirst({
+            where: { idUser: user.idUser }
+        })
+
+        response.status(200).json({
+            status: true,
+            data: getOneProfile,
+            message: `berhasil mengambil satu user`
+        })
+        return
+    } catch (error) {
+        response.status(400).json({
+            status: false,
+            message: `terjadi kesalhan saat akan mengambil data satu user. ${error}`
+        })
+        return
     }
 }
