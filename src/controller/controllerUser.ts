@@ -82,6 +82,19 @@ export const updateUser = async (request: Request, response: Response) => {
             return
         }
 
+        if (email && email !== findUser.email ) {
+            const exisstEmail = await prisma.user.findFirst({
+                where: {email}
+            })
+            if (exisstEmail) {
+                response.status(400).json({
+                    status: false,
+                    message: "email sudah digunakan"
+                })
+                return
+            }
+        }
+
         const update = await prisma.user.update({
             data: {
                 name: name || findUser.name,
