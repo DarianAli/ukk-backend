@@ -7,6 +7,7 @@ import Jwt from "jsonwebtoken";
 
 import { SECRET } from "../../global";
 import { error } from "console";
+import { any } from "joi";
  
 const prisma = new PrismaClient({errorFormat: "pretty"})
 
@@ -204,7 +205,7 @@ export const auth = async ( request: Request, response: Response ) => {
 
 export const getProfile = async (request: Request, response: Response) => {
     try {
-        const user = request.body.user;
+        const user = (request as any).user;
         const getOneProfile = await prisma.user.findFirst({
             where: { idUser: user.idUser }
         })

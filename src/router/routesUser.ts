@@ -14,7 +14,7 @@ app.get("/get", [verifyToken, verifyRole(["owner"])], getAllData)
 app.put("/update/:idUser", [verifyUpdateUser, verifyToken, verifyRole(["society", "owner"])], updateUser)
 app.delete("/delete/:idUser",[verifyToken, verifyRole(["owner"])], deleteUser)
 app.post("/login",[verifyLogin], auth)
-app.post("/upload", [verifyToken, verifyRole(["owner", "society"]), uploadFile.single("picture")], postPic)
-app.put("/update", [verifyToken, verifyRole(["owner", "society"]), uploadFile.single("picture")], updatePhoto)
+app.post("/upload/:userId", [verifyToken, verifyRole(["owner", "society"]), uploadFile.single("picture")], postPic)
+app.put("/update/:userId", [verifyToken, verifyRole(["owner", "society"]), uploadFile.single("picture")], updatePhoto)
 
 export default app
