@@ -68,11 +68,11 @@ export const getAllData = async (request: Request, response: Response) => {
 
 export const updateUser = async (request: Request, response: Response) => {
     try {
-        const { idUser } = request.params;
+        const { userId } = request.params;
         const { name, email, password, phone, role  } = request.body;
 
         const findUser = await prisma.user.findFirst({
-            where: { idUser: Number(idUser) }
+            where: { idUser: Number(userId) }
         })
 
         if(!findUser) {
@@ -104,7 +104,7 @@ export const updateUser = async (request: Request, response: Response) => {
                 phone: phone || findUser.phone,
                 role: role || findUser.role
             },
-            where: { idUser: Number (idUser) }
+            where: { idUser: Number (userId) }
         })
         response.json({
             status: true,
